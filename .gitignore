@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+bin/*Test
+bin/msgTrace
+bin/dumpIndex
+bin/log*
+
+# Temporary files 
+*.swp
+
+# just used for testing
+hello.txt
