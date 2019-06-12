@@ -89,7 +89,7 @@ main ( int c, char *v[] )
 
     estimateCpuSpeedInHz();
 
-    solClient_opaqueSession_pt sess_p = create_session( test.props, (msg_proc_ptr)&process_msg );
+    solClient_opaqueSession_pt sess_p = create_session( test.props, (void*)&process_msg );
 
     solClient_opaqueFlow_pt flow_p = 0;
     if ( test.dtype == QUEUE )

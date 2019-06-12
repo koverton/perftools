@@ -9,6 +9,7 @@ public:
     event_log_writer( const std::string& fnames_base, int log_size );
 
     int write(const record& l);
+    int write(const char* data, int length);
 
     bool has_space(int size) const {
         return size < remaining();

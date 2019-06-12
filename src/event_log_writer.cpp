@@ -44,6 +44,19 @@ int event_log_writer::write(const record& l)
     return written;
 }
 
+int event_log_writer::write(const char* data, int length) 
+{
+    if ( !has_space(length) ) 
+        return 0;
+    if ( bad_state() )
+        return -1;
+    *(index_++) = length; // sets the index entry to the record size
+    int written = write_str( data, length );
+    written_   += written;
+    (*count_)++; // increment the index record-count
+    return written;
+}
+
 int event_log_writer::write_str(void* str, int slen) 
 {
     return write_str( reinterpret_cast<const char*>(str), slen );

@@ -31,7 +31,7 @@ event_log_writer* NEW_WRITER() {
 
 
 bool
-process_msg( void* buff_p, int buff_sz, const char* topic ) 
+proc_rec( void* buff_p, int buff_sz, const char* topic ) 
 {
 	record f( topic, (void*)buff_p, buff_sz+1 );
 	// f.show();
@@ -44,6 +44,27 @@ process_msg( void* buff_p, int buff_sz, const char* topic )
 		}
 	}
 	return true;
+}
+
+bool
+proc_msg( solClient_opaqueMsg_pt msg_p )
+{
+	if ( solClient_msg_isDiscardIndication( msg_p ) ) {
+		std::cout << "Discards!" << std::endl;
+	}
+    solClient_bufInfo_t smfbuf;
+    solClient_opaqueDatablock_pt data_p;
+    solClient_returnCode_t rc = solClient_msg_encodeToSMF( msg_p, &smfbuf, &data_p );
+    int length = 0, tries = 0;
+    while( length != smfbuf.bufSize && tries++ < MAX_TRIES )  {
+        length = writer->write( reinterpret_cast<const char*>(smfbuf.buf_p), smfbuf.bufSize );
+        if ( !length ) {
+            delete writer;
+            writer = NEW_WRITER();
+        }
+    }
+
+    return true;
 }
 
 
@@ -60,7 +81,7 @@ main ( int c, char *v[] )
 	logsize  = atoi(v[3]);
 	std::cout << "Creating writer on ["<<fnamebase<<"]:["<<logsize<<"]" << std::endl;
 	writer = NEW_WRITER( );
-	solClient_opaqueSession_pt sess_p = create_session( v[1], &process_msg );
+	solClient_opaqueSession_pt sess_p = create_session( v[1], (void*) &proc_rec );
 
 	for( int i = 4; i < c; ++i )
 		subscribe( sess_p, v[i] );

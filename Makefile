@@ -32,6 +32,9 @@ $(BIN)/statsTest: tests/statsTest.cpp src/perf_stats.cpp
 $(BIN)/runTest: tests/runTest.cpp $(SOL_SRC)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
 
+$(BIN)/hdrTest: tests/hdrTest.cpp $(SOL_SRC)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
+
 $(BIN)/logWrite: tests/logWrite.cpp src/event_log_writer.cpp src/clock.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^
 

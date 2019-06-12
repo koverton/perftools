@@ -5,7 +5,7 @@
 
 #include "solclient/solClientMsg.h"
 
-static msg_proc_ptr my_proc_cb;
+static rec_proc_ptr my_proc_cb;
 
 solClient_rxMsgCallback_returnCode_t
 on_flow_msg ( solClient_opaqueFlow_pt flow_p, solClient_opaqueMsg_pt msg_p, void *user_p )
@@ -18,7 +18,7 @@ on_flow_msg ( solClient_opaqueFlow_pt flow_p, solClient_opaqueMsg_pt msg_p, void
     msg_get_bin_data( msg_p, &buff_p, buff_sz );
     msg_get_dest( msg_p, &dest );
 
-    msg_proc_ptr proc_cb = (msg_proc_ptr) user_p;
+    rec_proc_ptr proc_cb = (rec_proc_ptr) user_p;
     if ( (*proc_cb)( buff_p, buff_sz, dest.dest ) ) {
         /* Acknowledge the message after processing it. */
         solClient_msgId_t msgid;
@@ -30,7 +30,7 @@ on_flow_msg ( solClient_opaqueFlow_pt flow_p, solClient_opaqueMsg_pt msg_p, void
 }
 
 solClient_opaqueFlow_pt 
-create_flow( solClient_opaqueSession_pt sess_p, const std::string& queue_name, msg_proc_ptr proc_cb)
+create_flow( solClient_opaqueSession_pt sess_p, const std::string& queue_name, rec_proc_ptr proc_cb)
 {
 	solClient_returnCode_t rc = SOLCLIENT_OK;
 	solClient_opaqueFlow_pt flow_p;

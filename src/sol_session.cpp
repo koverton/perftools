@@ -8,30 +8,34 @@
 
 #include <cstdlib>
 
-static msg_proc_ptr my_proc_cb;
 
 solClient_rxMsgCallback_returnCode_t
 on_msg ( solClient_opaqueSession_pt sess_p, solClient_opaqueMsg_pt msg_p, void *user_p )
 {
-    void* buff_p;
-    solClient_uint32_t buff_sz;
-    solClient_destination_t dest;
-    solClient_returnCode_t rc = SOLCLIENT_OK;
+    msg_proc_ptr msg_cb = (msg_proc_ptr) user_p;
+    if (msg_cb != NULL) {
+        (*msg_cb)( msg_p );
+        return SOLCLIENT_CALLBACK_OK;
+    }
+    rec_proc_ptr proc_cb = (rec_proc_ptr) user_p;
+    if (proc_cb != NULL) {
+        void* buff_p;
+        solClient_uint32_t buff_sz;
+        solClient_destination_t dest;
+        solClient_returnCode_t rc = SOLCLIENT_OK;
 
-    msg_get_bin_data( msg_p, &buff_p, buff_sz );
-    msg_get_dest( msg_p, &dest );
+        msg_get_bin_data( msg_p, &buff_p, buff_sz );
+        msg_get_dest( msg_p, &dest );
 
-    msg_proc_ptr proc_cb = (msg_proc_ptr) user_p;
-    (*proc_cb)( buff_p, buff_sz, dest.dest );
+        (*proc_cb)( buff_p, buff_sz, dest.dest );
+    }
     return SOLCLIENT_CALLBACK_OK;
 }
 
 solClient_opaqueSession_pt
-create_session(const std::string& propsfile, msg_proc_ptr proc_cb)
+create_session(const std::string& propsfile, void* cb)
 {
     solClient_returnCode_t rc = SOLCLIENT_OK;
-
-    my_proc_cb = proc_cb;
 
     solClient_opaqueContext_pt ctx_p;
     solClient_context_createFuncInfo_t ctx_info = SOLCLIENT_CONTEXT_CREATEFUNC_INITIALIZER;
@@ -53,7 +57,7 @@ create_session(const std::string& propsfile, msg_proc_ptr proc_cb)
     }
 
     sess_info.rxMsgInfo.callback_p = on_msg;
-    sess_info.rxMsgInfo.user_p     = (void*)proc_cb;
+    sess_info.rxMsgInfo.user_p     = cb;
     sess_info.eventInfo.callback_p = on_event;
 
     /* Create a Session for sending and receiving messages. */

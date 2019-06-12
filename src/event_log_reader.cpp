@@ -1,4 +1,5 @@
 #include "event_log_reader.hpp"
+#include "solclient/solClient.h"
 
 #include <numeric>
 
@@ -16,6 +17,24 @@ event_log_reader::event_log_reader(const std::string& fnames_base)
     }
 
 
+solClient_opaqueMsg_pt event_log_reader::read_next_msg() 
+{
+    if ( next_ > count() ) return NULL;
+    int size = index_[next_++];
+    solClient_opaqueMsg_pt m = read_msg( nextoff_, size );
+    nextoff_ += size;
+    return m;
+}
+solClient_opaqueMsg_pt event_log_reader::read_msg(int offset, int size) 
+{
+    solClient_bufInfo_t smfbuf;
+    smfbuf.buf_p = (void*)(base_ + offset);
+    smfbuf.bufSize = size;
+    solClient_opaqueMsg_pt msg_p;
+    solClient_msg_decodeFromSmf( &smfbuf, &msg_p );
+    return msg_p;
+}
+
 record event_log_reader::read_next() 
 {
     if ( next_ > count() ) return record();
@@ -23,7 +42,6 @@ record event_log_reader::read_next()
     nextoff_ += index_[next_++];
     return l;
 }
-
 record event_log_reader::read(int offset) 
 {
     record l;

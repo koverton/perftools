@@ -1,6 +1,7 @@
 #ifndef EVENT_LOG_READER
 #define EVENT_LOG_READER
 #include "event_record.hpp"
+#include "solclient/solClientMsg.h"
 
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/stream.hpp>
@@ -11,8 +12,10 @@ public:
 
     inline int count() const { return index_[0]; }
 
-    record read_next();
+    solClient_opaqueMsg_pt read_next_msg();
+    solClient_opaqueMsg_pt read_msg(int offset, int size);
 
+    record read_next();
     record read(int offset);
 
     void dump_index(bool brief = true);

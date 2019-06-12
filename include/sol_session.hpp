@@ -7,10 +7,11 @@
 /**
  * Message event processor callback function type
  **/
-typedef bool (*msg_proc_ptr)(void* buffer, int len, const char* topic);
+typedef bool (*rec_proc_ptr)(void* buffer, int len, const char* topic);
+typedef bool (*msg_proc_ptr)(solClient_opaqueMsg_pt msg_p);
 
 solClient_opaqueSession_pt
-create_session(const std::string& propsfile, msg_proc_ptr proc_cb);
+create_session(const std::string& propsfile, void* cb);
 
 void
 subscribe( solClient_opaqueSession_pt sess_p, const std::string& topic_sub);
