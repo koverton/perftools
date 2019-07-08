@@ -13,6 +13,9 @@ typedef bool (*msg_proc_ptr)(solClient_opaqueMsg_pt msg_p);
 solClient_opaqueSession_pt
 create_session(const std::string& propsfile, void* cb);
 
+bool
+send( solClient_opaqueSession_pt sess_p, solClient_opaqueMsg_pt msg_p, const char* topic );
+
 void
 subscribe( solClient_opaqueSession_pt sess_p, const std::string& topic_sub);
 

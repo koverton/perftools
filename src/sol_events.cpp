@@ -1,38 +1,48 @@
 #include "sol_events.hpp"
+#include "sol_error.hpp"
 
 #include "solclient/solClient.h"
+#include <iostream>
 
 void
 on_event(solClient_opaqueSession_pt sess_p,
 			solClient_session_eventCallbackInfo_pt info_p,
 			void *user_p)
 {
+    std::cout << "EVENT: " << info_p->info_p << std::endl;
 	switch(info_p->sessionEvent) {
-		// connectivity events
-		case SOLCLIENT_SESSION_EVENT_UP_NOTICE:
+	// connectivity events
+	case SOLCLIENT_SESSION_EVENT_UP_NOTICE:
+		std::cout << "UP" << std::endl;
 		return;
 	case SOLCLIENT_SESSION_EVENT_RECONNECTING_NOTICE:
+		std::cout << "!!!!! WAIT, RETRYING !!!!!" << std::endl;
 		return;
-		case SOLCLIENT_SESSION_EVENT_RECONNECTED_NOTICE:
+	case SOLCLIENT_SESSION_EVENT_RECONNECTED_NOTICE:
+		std::cout << "!!!!! RECONNECTED !!!!!" << std::endl;
 		return;
 	// publisher events
  	case SOLCLIENT_SESSION_EVENT_ACKNOWLEDGEMENT:
 		return;
-		case SOLCLIENT_SESSION_EVENT_REJECTED_MSG_ERROR:
+	case SOLCLIENT_SESSION_EVENT_REJECTED_MSG_ERROR:
+		on_error( SOLCLIENT_FAIL, "on_event REJECTED_MSG_ERROR" );
 		return;
-		// Happy days
-		case SOLCLIENT_SESSION_EVENT_CAN_SEND:
-		case SOLCLIENT_SESSION_EVENT_TE_UNSUBSCRIBE_OK:
-		case SOLCLIENT_SESSION_EVENT_PROVISION_OK:
-		case SOLCLIENT_SESSION_EVENT_SUBSCRIPTION_OK:
+	// Happy days
+	case SOLCLIENT_SESSION_EVENT_CAN_SEND:
+	case SOLCLIENT_SESSION_EVENT_TE_UNSUBSCRIBE_OK:
+	case SOLCLIENT_SESSION_EVENT_PROVISION_OK:
+	case SOLCLIENT_SESSION_EVENT_SUBSCRIPTION_OK:
 		return;
-		// Error events
-		case SOLCLIENT_SESSION_EVENT_DOWN_ERROR:
-		case SOLCLIENT_SESSION_EVENT_CONNECT_FAILED_ERROR:
-		case SOLCLIENT_SESSION_EVENT_SUBSCRIPTION_ERROR:
-		case SOLCLIENT_SESSION_EVENT_RX_MSG_TOO_BIG_ERROR:
-		case SOLCLIENT_SESSION_EVENT_TE_UNSUBSCRIBE_ERROR:
-		case SOLCLIENT_SESSION_EVENT_PROVISION_ERROR:
+	// Error events
+	case SOLCLIENT_SESSION_EVENT_DOWN_ERROR:
+		on_error( SOLCLIENT_FAIL, "!!!!! DOWN, NOT RECONNECTING !!!!! " );
+		return;
+	case SOLCLIENT_SESSION_EVENT_CONNECT_FAILED_ERROR:
+	case SOLCLIENT_SESSION_EVENT_SUBSCRIPTION_ERROR:
+	case SOLCLIENT_SESSION_EVENT_RX_MSG_TOO_BIG_ERROR:
+	case SOLCLIENT_SESSION_EVENT_TE_UNSUBSCRIBE_ERROR:
+	case SOLCLIENT_SESSION_EVENT_PROVISION_ERROR:
+		on_error( SOLCLIENT_FAIL, "on_event error" );
 		return;
 	// Unknown events
 	default:

@@ -17,8 +17,14 @@ msg_set_dest_queue(solClient_opaqueMsg_pt msg_p, solClient_destination_t* dest, 
 bool 
 msg_set_dest_topic(solClient_opaqueMsg_pt msg_p, solClient_destination_t* dest, const std::string& topic);
 
+bool 
+msg_set_dest_topic(solClient_opaqueMsg_pt msg_p, const char* topic);
+
 bool
 msg_set_bin_data(solClient_opaqueMsg_pt msg_p, void* buffer, UINT32 size);
+
+bool
+msg_set_usr_data(solClient_opaqueMsg_pt msg_p, void* buffer, UINT32 size);
 
 
 
@@ -28,6 +34,9 @@ msg_set_bin_data(solClient_opaqueMsg_pt msg_p, void* buffer, UINT32 size);
 
 bool
 msg_get_bin_data(solClient_opaqueMsg_pt msg_p, void** buffer, UINT32& size);
+
+bool
+msg_get_usr_data(solClient_opaqueMsg_pt msg_p, void** buffer, UINT32& size);
 
 bool
 msg_get_dest(solClient_opaqueMsg_pt msg_p, solClient_destination_t* dest);

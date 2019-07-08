@@ -21,6 +21,8 @@ public:
                 	_buckets[ (latency/_width) ]++;
         }
 
+	UINT64 count() const { return _count; }
+
         void debug() const {
                 int i = 0;
                 for(latbuckets::const_iterator it = _buckets.begin(); it != _buckets.end(); ++it) {

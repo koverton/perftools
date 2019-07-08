@@ -63,7 +63,6 @@ proc_msg( solClient_opaqueMsg_pt msg_p )
             writer = NEW_WRITER();
         }
     }
-
     return true;
 }
 

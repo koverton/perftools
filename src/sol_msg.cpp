@@ -51,12 +51,39 @@ msg_set_dest_topic(solClient_opaqueMsg_pt msg_p, solClient_destination_t* dest, 
     return true;
 }
 
+bool 
+msg_set_dest_topic(solClient_opaqueMsg_pt msg_p, const char* topic)
+{
+    solClient_returnCode_t rc = SOLCLIENT_OK;
+
+    if ( ( rc = solClient_msg_setDeliveryMode ( msg_p,  SOLCLIENT_DELIVERY_MODE_DIRECT ) ) != SOLCLIENT_OK ) {
+        on_error ( rc, "solClient_msg_setDeliveryMode()" );
+        return false;
+    }
+    if ( ( rc = solClient_msg_setTopicPtr(msg_p, topic) ) != SOLCLIENT_OK ) {
+        on_error ( rc, "solClient_msg_setTopicPtr" );
+    }
+    return true;
+}
+
 bool
 msg_set_bin_data(solClient_opaqueMsg_pt msg_p, void* buffer, UINT32 size)
 {
     solClient_returnCode_t rc = SOLCLIENT_OK;
     if ( ( rc = solClient_msg_setBinaryAttachmentPtr ( msg_p, buffer, size ) ) != SOLCLIENT_OK ) {
         on_error ( rc, "solClient_msg_setBinaryAttachmentPtr()" );
+        return false;
+    }
+    return true;
+}
+
+bool
+msg_set_usr_data(solClient_opaqueMsg_pt msg_p, void* buffer, UINT32 size)
+{
+    if ( size > SOLCLIENT_BUFINFO_MAX_USER_DATA_SIZE ) return false;
+    solClient_returnCode_t rc = SOLCLIENT_OK;
+    if ( ( rc = solClient_msg_setUserDataPtr ( msg_p, buffer, size ) ) != SOLCLIENT_OK ) {
+        on_error ( rc, "solClient_msg_setUserDataPtr()" );
         return false;
     }
     return true;
@@ -72,6 +99,17 @@ msg_get_bin_data(solClient_opaqueMsg_pt msg_p, void** buffer, UINT32& size)
     solClient_returnCode_t rc = SOLCLIENT_OK;
     if ( ( rc = solClient_msg_getBinaryAttachmentPtr(msg_p, buffer, &size) ) != SOLCLIENT_OK ) {
         on_error ( rc, "solClient_msg_getBinaryAttachmentPtr()" );
+        return false;
+    }
+    return true;
+}
+
+bool
+msg_get_usr_data(solClient_opaqueMsg_pt msg_p, void** buffer, UINT32& size) 
+{
+    solClient_returnCode_t rc = SOLCLIENT_OK;
+    if ( ( rc = solClient_msg_getUserDataPtr(msg_p, buffer, &size) ) != SOLCLIENT_OK ) {
+        on_error ( rc, "solClient_msg_getUserDataPtr()" );
         return false;
     }
     return true;

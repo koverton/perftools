@@ -8,8 +8,6 @@
 #include "perf_stats.hpp"
 #include "testargs.hpp"
 
-#include "solclient/solClientMsg.h"
-
 #include <iostream>
 #include <string>
 #include <cstring>

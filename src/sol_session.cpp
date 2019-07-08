@@ -7,11 +7,13 @@
 #include "solclient/solClientMsg.h"
 
 #include <cstdlib>
+#include <iostream>
 
 
 solClient_rxMsgCallback_returnCode_t
 on_msg ( solClient_opaqueSession_pt sess_p, solClient_opaqueMsg_pt msg_p, void *user_p )
 {
+    //std::cout << "======> ONMSG <======== " << std::endl;
     msg_proc_ptr msg_cb = (msg_proc_ptr) user_p;
     if (msg_cb != NULL) {
         (*msg_cb)( msg_p );
@@ -48,7 +50,7 @@ create_session(const std::string& propsfile, void* cb)
         cleanup( 0 );
     }
 
-    solClient_log_setFilterLevel ( SOLCLIENT_LOG_CATEGORY_ALL, SOLCLIENT_LOG_ERROR );
+    solClient_log_setFilterLevel ( SOLCLIENT_LOG_CATEGORY_ALL, SOLCLIENT_LOG_INFO );
 
     if ( ( rc = solClient_context_create ( SOLCLIENT_CONTEXT_PROPS_DEFAULT_WITH_CREATE_THREAD,
                                            &ctx_p, &ctx_info, sizeof ( ctx_info ) ) ) != SOLCLIENT_OK ) {
@@ -79,6 +81,19 @@ create_session(const std::string& propsfile, void* cb)
     }
 
     return sess_p;
+}
+
+bool
+send( solClient_opaqueSession_pt sess_p, solClient_opaqueMsg_pt msg_p, const char* topic )
+{
+    solClient_returnCode_t rc = SOLCLIENT_OK;
+    if ( !msg_set_dest_topic( msg_p, topic) )
+        return false;
+    if ( ( rc = solClient_session_sendMsg ( sess_p, msg_p ) ) != SOLCLIENT_OK ) {
+        on_error ( rc, "solClient_session_send" );
+        return false;
+    }
+    return true;
 }
 
 void 

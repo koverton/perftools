@@ -1,6 +1,7 @@
 #ifndef TESTARGS_HPP
 #define TESTARGS_HPP
 #include <sys/stat.h>
+#include <iostream>
 
 typedef enum desttype
 {
