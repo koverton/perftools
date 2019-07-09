@@ -13,11 +13,11 @@ LDFLAGS = $(foreach d, $(LIBDIRS), -L$d) $(foreach l, $(LIBS), -l$l)
 
 SOL_SRC = $(wildcard $(SRC)/*.cpp)
 
-ALL     = $(BIN)/clockTest $(BIN)/statsTest $(BIN)/runTest $(BIN)/perfADTest fnma trace
+ALL     = $(BIN)/clockTest $(BIN)/statsTest $(BIN)/runTest $(BIN)/perfADTest grid trace
 
 all: $(ALL)
 
-fnma: $(BIN)/feedHandler $(BIN)/orchestrator $(BIN)/calculator
+grid: $(BIN)/feedHandler $(BIN)/orchestrator $(BIN)/calculator
 
 trace: $(BIN)/msgTrace $(BIN)/logWrite $(BIN)/logRead $(BIN)/dumpIndex
 
