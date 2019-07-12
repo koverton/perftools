@@ -15,10 +15,10 @@ make grid
 ```
 
 If all goes well, it should build `bin/orchestrator`, `bin/calculator` and `bin/feedHandler`. There are example shell scripts to run them with same basic pre-selected arguments. You should start them in this order:
-1. `./grid_orchestrator.sh` # begins the orchestrator process that listens for other participants
-2. `./grid_calc.sh 1`  # starts the first calculator instance and binds it to the orchestrator process
-3. `./grid_calc.sh 2`  # starts the second calculator instance and binds it to the orchestrator process
-4. `./grid_source.sh` # starts the data source, binds it to the orchestrator and begins sending input messages
+1. `./grid_orchestrator.sh` # begins the orchestrator process that listens for other participants; the code for this is tests/orchestrator.cpp
+2. `./grid_calc.sh 1`  # starts the first calculator instance and binds it to the orchestrator process; the code is in tests/calculator.cpp
+3. `./grid_calc.sh 2`  # starts the second calculator instance and binds it to the orchestrator process; the code is in tests/calculator.cpp
+4. `./grid_source.sh` # starts the data source, binds it to the orchestrator and begins sending input messages; the code is in tests/feedHandler.cpp
 
 
 Additional examples:
